@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Tic-Tac-Toe</title>
+        <meta charset="UTF-8">
+        <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&display=swap" rel="stylesheet"> 
+        <style>
+            @keyframes fadein{
+                0%{opacity:0;
+                    transform:translateY(20px)}
+                100%{opacity:1;
+                    transform:translateY(0px)}
+            }
+            @keyframes fadeout{
+                0%{opacity:1;
+                    transform:translateY(0px)}
+                100%{opacity:0;
+                    transform:translateY(20px)}
+            }
+            body{
+                background: lightgrey;
+                font-family: monospace;
+                animation:fadein 2s ease-out;
+            }
+            #squaregrid{
+                display:grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                grid-template-rows:1fr 1fr 1fr;
+                width:100%; 
+                height:100%;
+                margin:auto;
+                
+            }
+            .square{
+                border:3px solid white;
+                transition:0.3s;
+                
+            }
+            .square:hover{
+                background-color: skyblue;
+                transition:0.3s;
+                cursor: pointer;
+            }
+          
+            #gameboard{
+                width:350px;
+                height:350px;
+                border:1px solid black;
+                margin:auto;
+                margin-top:100px;
+                background: linear-gradient(90deg, rgba(0,68,11,1) 0%, rgba(18,121,9,1) 35%, rgba(92,196,0,1) 100%);
+            }
+            .characters{
+                color:black;
+                font-size:85px;
+                text-align: center;
+                margin-top:auto;
+                font-family: monospace;
+               
+               
+        
+            }
+            #clearAll{
+                background:white;
+                width:250px;
+                border:1px solid black;
+                font-size:25px;
+                font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+                text-align: center;
+                margin:auto;
+                border-radius:5px;
+                margin-top:50px;
+                box-shadow: 3px 3px 10px black;
+                transition:0.3s;
+                margin-bottom:50px;
+                padding:5px;
+            }
+            #clearAll:hover{
+                cursor:pointer;
+                background-color:skyblue;
+                transition:0.3s;
+            }
+            h1{
+                font-size:60px;
+                font-family: 'Amatic SC', cursive;
+                color:#663707;
+                text-align: center;
+                transform:rotate(-2deg);
+                margin-bottom: -30px;
+                margin-top:-5px;
+                
+                
+            }
+            h2{
+                font-size:20px;
+                font-family: 'Amatic SC', cursive;
+                color:brown;
+                text-align: center;
+                transform:rotate(-1deg);
+                margin-bottom: -80px;
+                
+            }
+            .computer-container{
+                width:400px;
+                background:#6dbf58;
+                text-align:center;
+                margin:auto;
+                font-family: 'Amatic SC', cursive;
+                color:#3d1b00;
+                font-size:40px;
+                border-radius:20px;
+                border-bottom:4px solid black;
+                margin-bottom:30px;
+                
+            }
+            .XorO{
+                display:grid;
+                border-top:1px solid black;
+                grid-template-columns: auto auto;
+                color:maroon;
+                font-family: monospace;
+                
+                
+            }
+            .playasX{
+                border-right:1px solid black;
+                border-bottom-left-radius: 20px;
+                background:white;
+                transition:0.3s;
+                cursor: pointer;
+                
+            }
+            .playasO{
+                border-bottom-right-radius: 20px;
+                background:white;
+                transition:0.3s;
+                cursor: pointer;
+                
+            } 
+            .playasO:hover{
+                background:skyblue;
+                transition:0.3s;
+            }
+            .playasX:hover{
+                background:skyblue;
+                transition:0.3s;
+            }
+           
+            #yes{
+                border-right:1px solid black;
+                border-bottom-left-radius: 20px;
+                background:white;
+                transition:0.3s;
+                cursor: pointer;
+                
+            }
+            #no{
+                border-bottom-right-radius: 20px;
+                background:grey;
+                transition:0.3s;
+                cursor: pointer;
+                
+            } 
+            #no:hover{
+                background:skyblue;
+                transition:0.3s;
+            }
+            #yes:hover{
+                background:skyblue;
+                transition:0.3s;
+            } 
+            
+            .comp-XorO{
+                display:none;
+            }
+
+        </style>
+    </head>
+    <body>
+        <h1>Tic-Tac-Toe</h1>
+        <h2>(designed by Josiah Sprankle)</h2>
+        <div id="gameboard">
+            <div id="squaregrid">
+                <div class="square square1"  onclick="addMark(1)"></div>
+                <div class="square square2"  onclick="addMark(2)"></div>
+                <div class="square square3"  onclick="addMark(3)"></div>
+                <div class="square square4"  onclick="addMark(4)"></div>
+                <div class="square square5"  onclick="addMark(5)"></div>
+                <div class="square square6"  onclick="addMark(6)"></div>
+                <div class="square square7"  onclick="addMark(7)"></div>
+                <div class="square square8"  onclick="addMark(8)"></div>
+                <div class="square square9"  onclick="addMark(9)"></div>
+            </div>
+        </div>
+        <div id="clearAll" onclick="clearAllFunction()">CLEAR ALL</div>
+        <div class="computer-container">
+            Computer? 
+            <div class="XorO"><div class="playasX"  onclick="showComputer()">Yes</div>
+            <div class="playasO"  onclick="hideComputer()">No</div></div>
+        </div>
+        <div class="computer-container comp-XorO">
+            Computer plays as: 
+            <div class="XorO"><div class="playasX" id="yes" onclick="computerX()">X</div>
+            <div class="playasO" id="no" onclick="computerO()">O</div></div>
+        </div>
+        
+        <script>
+            
+            
+            function showComputer(){
+                computerOn=true;
+                if(showScreen==false){
+                document.querySelector(".comp-XorO").style="display:block; animation:fadein 1s"
+                showScreen=true}
+                else{return}
+            }
+            function hideComputer(){
+                computerOn=false;
+                if(showScreen==true){
+                document.querySelector(".comp-XorO").style="display:block; animation:fadeout 1s; animation-fill-mode: forwards;"
+                setTimeout(function(){
+                    document.querySelector(".comp-XorO").style="display:none"
+                    document.getElementById("yes").style="background:white;"
+                    document.getElementById("no").style="background:white;"
+                    },1000)
+                showScreen=false}
+                else{return}
+            }
+            function computerX(){
+                document.getElementById("yes").style="background:grey;"
+                document.getElementById("no").style="background:white;"
+                xisTrue=true
+                computerIsX=true
+               
+                computerMove()
+            }
+            function computerO(){
+                document.getElementById("yes").style="background:white;"
+                document.getElementById("no").style="background:grey;"
+                computerIsX=false
+                computerMove()
+            }
+
+            var square1=document.querySelector(".square1").innerHTML
+            var square2=document.querySelector(".square2").innerHTML
+            var square3=document.querySelector(".square3").innerHTML
+            var square4=document.querySelector(".square4").innerHTML
+            var square5=document.querySelector(".square5").innerHTML
+            var square6=document.querySelector(".square6").innerHTML
+            var square7=document.querySelector(".square7").innerHTML
+            var square8=document.querySelector(".square8").innerHTML
+            var square9=document.querySelector(".square9").innerHTML
+            const X = '<div class="characters">X</div>'
+            const O = '<div class="characters">O</div>'
+            var xisTrue = true;
+            var computerOn=false;
+            var openSpots=[1,2,3,4,5,6,7,8,9]
+            var closedSpots=[]
+            var computerIsX=false //Computer is O by default
+            var showScreen=false
+            var moveTestO
+            var moveX
+            var moveO
+            var squareNumR
+            var squareNumC
+            var possibleMoves
+            var moveTestX
+            var checkWinX
+            var checkWinO
+            var winX=false
+            var winO=false
+            var numIndex
+            var winPlayer=false;
+            var indexO
+            var indexX
+    
+            
+          
+///////////////////////MINIMAX/////////////////////////////////////////
+/*
+A Maximizer, and a minimizer.
+
+        
+
+*/      
+        function checkSquares(){
+                square1=document.querySelector(".square1").innerHTML
+                square2=document.querySelector(".square2").innerHTML
+                square3=document.querySelector(".square3").innerHTML
+                square4=document.querySelector(".square4").innerHTML
+                square5=document.querySelector(".square5").innerHTML
+                square6=document.querySelector(".square6").innerHTML
+                square7=document.querySelector(".square7").innerHTML
+                square8=document.querySelector(".square8").innerHTML
+                square9=document.querySelector(".square9").innerHTML
+                }
+        
+        function checkWin_X(){
+                    checkSquares()
+                    checkWinX =[
+                        square1==X && square2==X && square3==X,
+                        square4==X && square5==X && square6==X,
+                        square7==X && square8==X && square9==X,
+                        square1==X && square4==X && square7==X,
+                        square2==X && square5==X && square8==X,
+                        square3==X && square6==X && square9==X,
+                        square1==X && square5==X && square9==X,
+                        square3==X && square5==X && square7==X,
+                    ]
+                    for(j=0;j<8;j++){
+                    if(checkWinX[j])
+                    {  
+                    winX=true
+                    break;
+                    }}}
+
+        function checkWin_O(){
+                     checkSquares()
+                     checkWinO=[
+                        square1==O && square2==O && square3==O,
+                        square4==O && square5==O && square6==O,
+                        square7==O && square8==O && square9==O,
+                        square1==O && square4==O && square7==O,
+                        square2==O && square5==O && square8==O,
+                        square3==O && square6==O && square9==O,
+                        square1==O && square5==O && square9==O,
+                        square3==O && square5==O && square7==O,
+                        ]
+                     for(l=0;l<8;l++){
+                        
+                    if(checkWinO[l])
+                         {  
+                     winO=true
+                     break;
+                    }}}
+        
+        function checkTie(){
+            if(openSpots==[]){
+                alert("Tie Game!")
+                clearAllFunction()
+            }
+        }
+       
+            //DEFINES WINNING POSITIONS, CHECKS IF THERE IS A WINNING POSITION
+        function checkWin(){
+                let checkWinVar=[
+                        square1==X && square2==X && square3==X,
+                        square4==X && square5==X && square6==X,
+                        square7==X && square8==X && square9==X,
+                        square1==X && square4==X && square7==X,
+                        square2==X && square5==X && square8==X,
+                        square3==X && square6==X && square9==X,
+                        square1==X && square5==X && square9==X,
+                        square3==X && square5==X && square7==X,
+                        square1==O && square2==O && square3==O,
+                        square4==O && square5==O && square6==O,
+                        square7==O && square8==O && square9==O,
+                        square1==O && square4==O && square7==O,
+                        square2==O && square5==O && square8==O,
+                        square3==O && square6==O && square9==O,
+                        square1==O && square5==O && square9==O,
+                        square3==O && square5==O && square7==O,
+                    ]
+                    for(i=0;i<16;i++){
+                        if(checkWinVar[i])
+                        {  
+                        alert("You won!")
+                        winPlayer=true
+                        clearAllFunction()
+                        break;
+                        }}}
+            //THE COMPUTER ALGORITHM
+        function computerMove(){
+                
+                function moveRandom()
+              {if (computerOn==true){
+                let randNumInd = Math.floor(Math.random() * openSpots.length)
+                squareNumR = ".square"+openSpots[randNumInd]
+                
+                if (xisTrue==true){
+                        document.querySelector(squareNumR).innerHTML=X
+                        xisTrue = false
+                    } else {
+                        document.querySelector(squareNumR).innerHTML=O
+                        xisTrue = true
+                }
+                openSpots.splice(randNumInd,1)
+                closedSpots.unshift(randNumInd-1)
+                
+                }}
+                function checkWinComp(){
+                square1=document.querySelector(".square1").innerHTML
+                square2=document.querySelector(".square2").innerHTML
+                square3=document.querySelector(".square3").innerHTML
+                square4=document.querySelector(".square4").innerHTML
+                square5=document.querySelector(".square5").innerHTML
+                square6=document.querySelector(".square6").innerHTML
+                square7=document.querySelector(".square7").innerHTML
+                square8=document.querySelector(".square8").innerHTML
+                square9=document.querySelector(".square9").innerHTML
+                let checkWinVar=[
+                        square1==X && square2==X && square3==X,
+                        square4==X && square5==X && square6==X,
+                        square7==X && square8==X && square9==X,
+                        square1==X && square4==X && square7==X,
+                        square2==X && square5==X && square8==X,
+                        square3==X && square6==X && square9==X,
+                        square1==X && square5==X && square9==X,
+                        square3==X && square5==X && square7==X,
+                        square1==O && square2==O && square3==O,
+                        square4==O && square5==O && square6==O,
+                        square7==O && square8==O && square9==O,
+                        square1==O && square4==O && square7==O,
+                        square2==O && square5==O && square8==O,
+                        square3==O && square6==O && square9==O,
+                        square1==O && square5==O && square9==O,
+                        square3==O && square5==O && square7==O,
+                    ]
+                    for(i=0;i<16;i++){
+                    if(checkWinVar[i])
+                        {  
+                            checkWinVar=[]
+                            alert("Computer wins!")
+                            clearAllFunction()
+                            break;
+                        }
+                    }
+                    
+                }
+                function evaluateX(){
+                    possibleMoves = openSpots
+                    for(i=0;i<possibleMoves.length;i++){
+                        indexX = possibleMoves[i]
+                        moveTestX = ".square"+possibleMoves[i]
+                        document.querySelector(moveTestX).innerHTML=X
+                        checkWin_X()
+                        if(winX==true){
+                            moveX=moveTestX
+                            document.querySelector(moveTestX).innerHTML=""
+                            break;
+                        } else{
+                            winX=false
+                            document.querySelector(moveTestX).innerHTML=""}
+                    }
+                    
+                }//END EVALUATE-X
+                function evaluateO(){
+                    possibleMoves = openSpots
+                    for(k=0;k<possibleMoves.length;k++){
+                        indexO = possibleMoves[k]
+                        moveTestO = ".square"+possibleMoves[k]
+                        document.querySelector(moveTestO).innerHTML=O
+                        checkWin_O()
+                        if(winO==true){
+                            moveO=moveTestO
+                            document.querySelector(moveTestO).innerHTML=""
+                            break;
+                        } else{
+                            winO=false
+                            document.querySelector(moveTestO).innerHTML=""}
+                    }
+                }//END EVALUATE-O
+               
+                function findBestMove(){
+                    evaluateX()
+                    evaluateO()
+                //THE CODE TO EXECUTE IF COMPUTER IS X
+                if(computerIsX==true){
+                    
+                    if(winX==true){
+                        document.querySelector(moveX).innerHTML=X
+                        checkWinComp()
+                    } else if(winO==true){
+                        document.querySelector(moveO).innerHTML=X
+                        openSpots.splice(openSpots.indexOf(indexO),1)
+                    } else {
+                        //ANOTHER IF STATEMENT TO SEE IF CENTER SQUARE HAS BEEN TAKEN
+                        if(square9!=""){
+                        moveX = ".square"+possibleMoves[0]
+                        document.querySelector(moveX).innerHTML=X
+                        openSpots.splice(openSpots.indexOf(possibleMoves[0]),1)
+                        }else{
+                        document.querySelector(".square9").innerHTML=X
+                        openSpots.splice(openSpots.indexOf(9),1)
+                        }
+                        
+                    }
+                    xisTrue=false
+                }
+
+                //THE CODE TO EXECUTE IF COMPUTER IS O
+                if(computerIsX==false){
+                    
+                    if(winO==true){
+                        document.querySelector(moveO).innerHTML=O
+                        checkWinComp()
+                    } else if(winX==true){
+                        document.querySelector(moveX).innerHTML=O
+                        openSpots.splice(openSpots.indexOf(indexX),1)//HERE!!!!! IT IS SPLICING "SQUARE 3" instead off the index!!!!
+                    } else {
+                        //ANOTHER IF STATEMENT TO SEE IF CENTER SQUARE HAS BEEN TAKEN
+                        if(square9!=""){
+                        moveO = ".square"+possibleMoves[0]
+                        document.querySelector(moveO).innerHTML=O
+                        openSpots.splice(openSpots.indexOf(possibleMoves[0]),1)
+                        }else{
+                        document.querySelector(".square9").innerHTML=O
+                        openSpots.splice(openSpots.indexOf(9),1)
+                        }
+                        
+                    }
+                    xisTrue=true
+                }
+               }
+                findBestMove()
+                checkTie()
+            }//END COMPUTERMOVE
+           
+           //REDFINES SQUARE VARIABLES TO HAVE NEWLY-PRINTED X OR O
+            
+            function addMark(num){
+                
+                //ADDS AN X OR AN O, MAKES XISTRUE FALSE OR TRUE, CLEARS BOARD IF OCCUPIED//
+                winX=false
+                winO=false
+                openSpots.splice(openSpots.indexOf(num),1)
+                let squareNum = ".square"+num
+
+                if(document.querySelector(squareNum).innerHTML!=""){return("occupied!")}
+                if(xisTrue==true){
+                    document.querySelector(squareNum).innerHTML=X
+                    xisTrue=false;
+                }else if(xisTrue==false){
+                    document.querySelector(squareNum).innerHTML=O
+                    xisTrue=true
+                } 
+                
+
+             
+
+            checkSquares()
+            checkWin()
+            checkTie()
+            if(computerOn==true && winPlayer==false){computerMove()}
+            winPlayer=false;
+            
+           
+            }
+            
+            
+            
+        document.getElementById("clearAll").addEventListener("click", clearAllFunction)
+        
+        function clearAllFunction(){
+                for(m=1;m<10;m++){
+                    squareNum = ".square"+m;
+                    document.querySelector(squareNum).innerHTML="";
+                    xisTrue=true;
+                    computerIsX=false;
+                    openSpots=[1,2,3,4,5,6,7,8,9]
+                    closedSpots=[]
+                   
+                }
+            }
+        </script>
+
+
+    </body>
+</html>
